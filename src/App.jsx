@@ -21,7 +21,7 @@ export default function Calcetto() {
   const [timer, setTimer] = useState({ duration: 30, endsAt: null, pausedRemaining: null, status: "idle" });
   const [now, setNow] = useState(Date.now());
   const [name, setName] = useState("");
-  const [me, setMe] = useState("");
+  const [me, setMe] = useState(() => sessionStorage.getItem("calcetto_me") || "");
   const [nameError, setNameError] = useState("");
   const [entering, setEntering] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -144,22 +144,28 @@ export default function Calcetto() {
       for (const t of ["A", "B"]) { const i = s[t].findIndex(x => x && x.toLowerCase() === oldMe.toLowerCase()); if (i >= 0) s[t][i] = n; }
       const v = votes.map(x => x.toLowerCase() === oldMe.toLowerCase() ? n : x);
       setSlots(s); setVotes(v); setMe(n); setName(""); setEntering(false);
+      sessionStorage.setItem("calcetto_me", n);
       await save(match, s, waitlist, v, timer); return;
     }
     setMe(n); setName(""); setEntering(false);
+    sessionStorage.setItem("calcetto_me", n);
   };
 
   const tapSlot = async (team, idx) => {
     if (timer.status === "running") return;
     const occupant = slots[team][idx];
-    if (occupant && me && occupant.toLowerCase() === me.toLowerCase()) {
-      const s = { A: [...slots.A], B: [...slots.B] }; s[team][idx] = null;
-      const { slots: s2, waitlist: w2 } = promoteWaitlist(s, waitlist);
-      setSlots(s2); setWaitlist(w2);
-      await save(match, s2, w2, votes, timer);
+    if (occupant) {
+      const isOwn = me && occupant.toLowerCase() === me.toLowerCase();
+      if (isOwn || adminAuthed) {
+        const s = { A: [...slots.A], B: [...slots.B] }; s[team][idx] = null;
+        const v = votes.filter(x => x.toLowerCase() !== occupant.toLowerCase());
+        const { slots: s2, waitlist: w2 } = promoteWaitlist(s, waitlist);
+        setSlots(s2); setWaitlist(w2); setVotes(v);
+        await save(match, s2, w2, v, timer);
+        return;
+      }
       return;
     }
-    if (occupant) return;
     if (!me) return;
     const s = { A: [...slots.A], B: [...slots.B] };
     for (const t of ["A", "B"]) { const i = s[t].findIndex(x => x && x.toLowerCase() === me.toLowerCase()); if (i >= 0) s[t][i] = null; }
@@ -176,6 +182,7 @@ export default function Calcetto() {
     const v = votes.filter(x => x.toLowerCase() !== me.toLowerCase());
     const { slots: s2, waitlist: w2 } = promoteWaitlist(s, waitlist);
     setSlots(s2); setVotes(v); setWaitlist(w2);
+    sessionStorage.removeItem("calcetto_me");
     await save(match, s2, w2, v, timer);
   };
 
@@ -183,6 +190,7 @@ export default function Calcetto() {
     const n = name.trim(); if (!n) return;
     if (isOnField(slots, n) || waitlist.some(x => x.name.toLowerCase() === n.toLowerCase())) { setMe(n); setName(""); return; }
     const w = [...waitlist, { name: n }]; setWaitlist(w); setMe(n); setName("");
+    sessionStorage.setItem("calcetto_me", n);
     await save(match, slots, w, votes, timer);
   };
   const leaveWaitlist = async (n) => {
