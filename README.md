@@ -77,52 +77,71 @@ Apri `.firebaserc` e sostituisci il Project ID:
 
 ### STEP 6 — Deploy automatico con GitHub Actions (consigliato)
 
-Ogni push su `main` esegue automaticamente build e deploy su Firebase Hosting.
+Ogni push su `main` esegue automaticamente build e deploy su Firebase Hosting.  
+**Non serve un computer né il terminale** — tutto si fa dal browser del telefono.
 
-#### 6a. Ottieni il token Firebase (una tantum, dal tuo computer)
+#### 6a. Genera il Service Account (solo browser, dal telefono)
 
-Apri un terminale locale nella cartella del progetto e lancia:
+1. Apri **Chrome/Safari** sul telefono e vai su:
+   **https://console.firebase.google.com**
+2. Seleziona il progetto **myvogueai**
+3. Tocca l'**icona ingranaggio** ⚙️ in alto a sinistra → **Impostazioni progetto**
+4. Vai alla scheda **Account di servizio**
+5. In basso, nella sezione **SDK Admin di Firebase**, tocca **Genera nuova chiave privata**
+6. Conferma con **Genera chiave**
+7. Si scarica un file `.json` (es. `myvogueai-firebase-adminsdk-xxxxx.json`)
 
-```bash
-npx firebase login:ci
+> **Sul telefono:** apri il file scaricato con l'app File o toccalo dalla notifica di download. Seleziona tutto il contenuto e **copialo negli appunti** — ti serve l'intero JSON, dalle parentesi graffe `{` fino a `}`.
+
+Il JSON ha questa forma (i valori saranno i tuoi):
+
+```json
+{
+  "type": "service_account",
+  "project_id": "myvogueai",
+  "private_key_id": "...",
+  "private_key": "-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-xxxxx@myvogueai.iam.gserviceaccount.com",
+  ...
+}
 ```
 
-1. Si apre il browser → accedi con l'account Google del progetto **myvogueai**
-2. Autorizza l'accesso
-3. Nel terminale compare un token lungo, ad esempio:
-   ```
-   ✔  Success! Use this token to login on a CI server:
+⚠️ **Trattalo come una password:** non condividerlo, non committarlo nel codice, non incollarlo in chat.
 
-   1//0gXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-   ```
-4. **Copialo subito** — non viene mostrato di nuovo
+#### 6b. Inserisci il JSON nei GitHub Secrets (dal telefono)
 
-> Il token non scade subito, ma può essere revocato. Se il deploy inizia a fallire con errori di autenticazione, rigeneralo con lo stesso comando.
+1. Apri nel browser:
+   **https://github.com/myvogueai/Calcetto/settings/secrets/actions**
+2. Tocca **New repository secret**
+3. Compila così:
+   - **Name:** `FIREBASE_SERVICE_ACCOUNT`
+   - **Secret:** incolla **tutto** il contenuto del file JSON copiato al passo 6a
+4. Tocca **Add secret**
 
-#### 6b. Inserisci il token nei GitHub Secrets
-
-1. Apri il repository su GitHub: **myvogueai/Calcetto**
-2. Vai su **Settings** → **Secrets and variables** → **Actions**
-3. Clicca **New repository secret**
-4. Compila così:
-   - **Name:** `FIREBASE_TOKEN`
-   - **Secret:** incolla il token copiato al passo precedente
-5. Clicca **Add secret**
-
-URL diretto: https://github.com/myvogueai/Calcetto/settings/secrets/actions
+> Se avevi creato in precedenza il secret `FIREBASE_TOKEN`, puoi eliminarlo: non serve più.
 
 #### 6c. Attiva il workflow
 
-Il file `.github/workflows/firebase-deploy.yml` deve essere presente sul branch `main` (merge della PR o push diretto).
+Il file `.github/workflows/firebase-deploy.yml` deve essere presente sul branch `main` (merge della PR).
 
-Da quel momento, ogni `git push` su `main`:
+Da quel momento, ogni push su `main`:
 - installa le dipendenze
 - esegue `npm run build`
+- si autentica con il Service Account
 - fa deploy su **Firebase Hosting** + **regole Firestore** (`calcetto`)
 
-Puoi anche lanciare il deploy manualmente da **Actions** → **Deploy to Firebase Hosting** → **Run workflow**.
+Puoi anche lanciare il deploy manualmente dal telefono:
+**GitHub** → tab **Actions** → **Deploy to Firebase Hosting** → **Run workflow**
 
 L'app sarà disponibile su: **https://myvogueai.web.app**
+
+#### Risoluzione problemi
+
+| Errore | Soluzione |
+|--------|-----------|
+| `Permission denied` sul deploy | Vai su [Google Cloud IAM](https://console.cloud.google.com/iam-admin/iam?project=myvogueai) dal browser, trova l'account `firebase-adminsdk-...` e aggiungi i ruoli **Firebase Hosting Admin** e **Firebase Rules Admin** |
+| Secret non trovato | Verifica che il nome sia esattamente `FIREBASE_SERVICE_ACCOUNT` |
+| JSON non valido | Incolla l'intero file JSON, senza spazi o testo aggiuntivo prima/dopo |
 
 ---
 
