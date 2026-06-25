@@ -10,7 +10,7 @@ const C = {
 const SLOT_Y = [0.12, 0.31, 0.5, 0.69, 0.88];
 const SLOTS_PER_SIDE = 5;
 const DURATIONS = [20, 30, 45, 60, 90];
-const TEST_MODE = true;
+const TEST_MODE = false;
 
 export default function Calcetto() {
   const [config, setConfig] = useState(null);
@@ -87,6 +87,26 @@ export default function Calcetto() {
   const allNames = (s) => [...s.A, ...s.B].filter(Boolean);
   const isOnField = (s, n) => allNames(s).some(x => x.toLowerCase() === n.toLowerCase());
 
+  const promoteWaitlist = (s, w) => {
+    if (!w.length) return { slots: s, waitlist: w };
+    const next = { A: [...s.A], B: [...s.B] };
+    const [promoted, ...rest] = w;
+    for (const t of ["A", "B"]) {
+      for (let i = 0; i < SLOTS_PER_SIDE; i++) {
+        if (!next[t][i]) {
+          next[t][i] = promoted.name;
+          return { slots: next, waitlist: rest };
+        }
+      }
+    }
+    return { slots: s, waitlist: w };
+  };
+
+  const shareWhatsApp = () => {
+    const text = `⚽ *${match.title}*\n${match.when} · ${match.place}\nPrenota il tuo posto: https://calcetto-5vs5.web.app\nPIN: ${config.groupPin}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`);
+  };
+
   const tryEnter = () => {
     if (!config) return;
     if (pinInput.trim().toUpperCase() === config.groupPin.toUpperCase()) { setAuthed(true); setPinError(""); }
@@ -134,7 +154,10 @@ export default function Calcetto() {
     const occupant = slots[team][idx];
     if (occupant && me && occupant.toLowerCase() === me.toLowerCase()) {
       const s = { A: [...slots.A], B: [...slots.B] }; s[team][idx] = null;
-      setSlots(s); await save(match, s, waitlist, votes, timer); return;
+      const { slots: s2, waitlist: w2 } = promoteWaitlist(s, waitlist);
+      setSlots(s2); setWaitlist(w2);
+      await save(match, s2, w2, votes, timer);
+      return;
     }
     if (occupant) return;
     if (!me) return;
@@ -151,7 +174,9 @@ export default function Calcetto() {
     const s = { A: [...slots.A], B: [...slots.B] };
     for (const t of ["A", "B"]) { const i = s[t].findIndex(x => x && x.toLowerCase() === me.toLowerCase()); if (i >= 0) s[t][i] = null; }
     const v = votes.filter(x => x.toLowerCase() !== me.toLowerCase());
-    setSlots(s); setVotes(v); await save(match, s, waitlist, v, timer);
+    const { slots: s2, waitlist: w2 } = promoteWaitlist(s, waitlist);
+    setSlots(s2); setVotes(v); setWaitlist(w2);
+    await save(match, s2, w2, v, timer);
   };
 
   const joinWaitlist = async () => {
@@ -293,8 +318,9 @@ export default function Calcetto() {
             <>
               <h1 style={{ margin: "8px 0 4px", fontSize: 24, fontWeight: 800 }}>{match.title}</h1>
               <div style={{ color: C.muted, fontSize: 14 }}>{match.when} · {match.place}</div>
-              <div style={{ display: "flex", gap: 14, justifyContent: "center", marginTop: 6 }}>
+              <div style={{ display: "flex", gap: 14, justifyContent: "center", marginTop: 6, flexWrap: "wrap" }}>
                 <button onClick={() => setEditing(true)} style={linkBtn}>modifica partita</button>
+                <button onClick={shareWhatsApp} style={{ ...linkBtn, color: C.green }}>📲 Condividi</button>
                 <button onClick={() => setShowAdmin(true)} style={{ ...linkBtn, color: isAdmin ? C.green : C.amber }}>{isAdmin ? "✓ admin" : "admin"}</button>
               </div>
             </>
