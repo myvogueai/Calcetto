@@ -34,9 +34,17 @@ jobs:
         with:
           credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
 
-      - name: Deploy to Firebase
+      - name: Deploy to Firebase Hosting
         run: |
           npx firebase deploy \
-            --only hosting,firestore:rules \
+            --only hosting \
+            --project myvogueai \
+            --non-interactive
+
+      - name: Deploy Firestore rules (optional)
+        continue-on-error: true
+        run: |
+          npx firebase deploy \
+            --only firestore:rules \
             --project myvogueai \
             --non-interactive
