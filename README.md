@@ -75,27 +75,64 @@ Apri `.firebaserc` e sostituisci il Project ID:
 }
 ```
 
-### STEP 6 — Deploy su Firebase Hosting
+### STEP 6 — Deploy automatico con GitHub Actions (consigliato)
 
-#### Prima volta (installa Firebase CLI):
+Ogni push su `main` esegue automaticamente build e deploy su Firebase Hosting.
+
+#### 6a. Ottieni il token Firebase (una tantum, dal tuo computer)
+
+Apri un terminale locale nella cartella del progetto e lancia:
+
 ```bash
-npm install -g firebase-tools
-firebase login
+npx firebase login:ci
 ```
 
-#### Ogni volta che vuoi fare il deploy:
+1. Si apre il browser → accedi con l'account Google del progetto **myvogueai**
+2. Autorizza l'accesso
+3. Nel terminale compare un token lungo, ad esempio:
+   ```
+   ✔  Success! Use this token to login on a CI server:
+
+   1//0gXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+   ```
+4. **Copialo subito** — non viene mostrato di nuovo
+
+> Il token non scade subito, ma può essere revocato. Se il deploy inizia a fallire con errori di autenticazione, rigeneralo con lo stesso comando.
+
+#### 6b. Inserisci il token nei GitHub Secrets
+
+1. Apri il repository su GitHub: **myvogueai/Calcetto**
+2. Vai su **Settings** → **Secrets and variables** → **Actions**
+3. Clicca **New repository secret**
+4. Compila così:
+   - **Name:** `FIREBASE_TOKEN`
+   - **Secret:** incolla il token copiato al passo precedente
+5. Clicca **Add secret**
+
+URL diretto: https://github.com/myvogueai/Calcetto/settings/secrets/actions
+
+#### 6c. Attiva il workflow
+
+Il file `.github/workflows/firebase-deploy.yml` deve essere presente sul branch `main` (merge della PR o push diretto).
+
+Da quel momento, ogni `git push` su `main`:
+- installa le dipendenze
+- esegue `npm run build`
+- fa deploy su **Firebase Hosting** + **regole Firestore** (`calcetto`)
+
+Puoi anche lanciare il deploy manualmente da **Actions** → **Deploy to Firebase Hosting** → **Run workflow**.
+
+L'app sarà disponibile su: **https://myvogueai.web.app**
+
+---
+
+### Deploy manuale (alternativa)
+
 ```bash
-npm run build          # compila l'app in /dist
-firebase deploy        # carica su Firebase Hosting
+npm run build
+npx firebase login
+npx firebase deploy
 ```
-
-Al termine vedrai un URL tipo:
-```
-✔  Deploy complete!
-Hosting URL: https://il-tuo-progetto.web.app
-```
-
-Condividi quell'URL con il tuo gruppo — tutti potranno accedere con il PIN `CALCE2026`.
 
 ---
 
