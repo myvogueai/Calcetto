@@ -390,7 +390,7 @@ export default function Calcetto() {
                   display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 14, color: occupant ? "#0d1f14" : `${teamColor}99`, boxShadow: occupant ? "0 2px 6px rgba(0,0,0,.4)" : "none" }}>
                   {occupant ? initials(occupant) : "+"}
                 </div>
-                {occupant && <span style={{ fontSize: 10, fontWeight: 600, background: "#0d1f14cc", padding: "1px 5px", borderRadius: 6, maxWidth: 62, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{occupant}</span>}
+                {occupant && <span style={{ fontSize: 12, fontWeight: 600, color: "#fff", background: "#0d1f14ee", padding: "1px 5px", borderRadius: 6, maxWidth: 62, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{occupant}</span>}
               </button>
             );
           }))}
@@ -407,7 +407,7 @@ export default function Calcetto() {
             <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 4 }}>🎲 Mischia squadre</div>
             <div style={{ color: C.muted, fontSize: 13, marginBottom: 12 }}>Servono <b style={{ color: C.amber }}>{needed}</b> voti su {onField.length}.</div>
             <button onClick={toggleVote} disabled={!canVote} style={{ ...btnPrimary, width: "100%", background: iVoted ? C.line : C.amber, color: iVoted ? C.chalk : "#1a1206", opacity: canVote ? 1 : 0.5 }}>
-              {!canVote ? "Occupa un posto per votare" : iVoted ? "Ritira voto" : "Vota mischia"}
+              {!canVote ? "Occupa un posto per votare" : iVoted ? "Ritira voto" : "Mischia squadre"}
             </button>
             <div style={{ marginTop: 12, fontSize: 22, fontWeight: 800, color: votes.length >= needed ? C.green : C.amber }}>{votes.length}/{needed}</div>
             <div style={{ display: "flex", gap: 4, marginTop: 8, justifyContent: "center" }}>
