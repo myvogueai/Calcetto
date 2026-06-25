@@ -1,15 +1,13 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 
-// Incolla qui il blocco firebaseConfig dalla Console Firebase
-// (progetto calcetto-5vs5 → Impostazioni → Le tue app → app web)
 const firebaseConfig = {
-  apiKey: "INSERISCI_API_KEY",
+  apiKey: "AIzaSyDQ57idD6xuG7K0LsNBViLuxiIkCdcZPFA",
   authDomain: "calcetto-5vs5.firebaseapp.com",
   projectId: "calcetto-5vs5",
   storageBucket: "calcetto-5vs5.firebasestorage.app",
-  messagingSenderId: "INSERISCI_MESSAGING_SENDER_ID",
-  appId: "INSERISCI_APP_ID",
+  messagingSenderId: "314044322937",
+  appId: "1:314044322937:web:f72a885a356b892b7c70a8",
 };
 
 const app = initializeApp(firebaseConfig);
