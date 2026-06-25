@@ -41,7 +41,7 @@ export function GameProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const userId = useMemo(() => generateUserId(), []);
-  const gameRef = useMemo(() => doc(db, 'sessions', 'main'), []);
+  const gameRef = useMemo(() => doc(db, 'calcetto', 'main'), []);
 
   useEffect(() => {
     let unsub;

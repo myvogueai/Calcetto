@@ -5,7 +5,7 @@ service cloud.firestore {
     // The game session document is readable and writable by anyone with the link.
     // All validation logic lives in the app (PIN checks, transactions).
     // For production you can tighten these rules.
-    match /sessions/{sessionId} {
+    match /calcetto/{sessionId} {
       allow read, write: if true;
     }
   }
