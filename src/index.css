@@ -340,39 +340,55 @@ input::placeholder { color: var(--text-muted); }
 .team-a-dot { background: var(--team-a); box-shadow: 0 0 6px var(--team-a); }
 .team-b-dot { background: var(--team-b); box-shadow: 0 0 6px var(--team-b); }
 
-/* Slots grid */
+/* Slots grid — circular slots */
 .slots-grid {
   position: relative; z-index: 1;
   display: grid; grid-template-columns: 1fr 1fr;
-  gap: 8px; padding: 10px 10px 14px;
+  gap: 12px 16px; padding: 16px 12px 20px;
 }
 
-/* ─── Player Slot ─────────────────────────────────────────── */
+.slot-row {
+  display: contents;
+}
+
+.slot-cell {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  min-height: 88px; justify-content: center;
+}
+
+/* ─── Player Slot (circular) ─────────────────────────────── */
 .player-slot {
-  border-radius: var(--radius-sm);
-  min-height: 60px; padding: 8px;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
+  width: 58px; height: 58px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
   cursor: default; transition: var(--transition);
-  position: relative; text-align: center;
+  position: relative; text-align: center; flex-shrink: 0;
+  font-size: 1.4rem; font-weight: 700;
 }
 
 .player-slot.team-a.empty {
   background: var(--team-a-bg);
-  border: 1.5px dashed rgba(74,158,226,0.4);
+  border: 2px dashed rgba(74,158,226,0.55);
+  color: var(--team-a);
 }
 .player-slot.team-b.empty {
   background: var(--team-b-bg);
-  border: 1.5px dashed rgba(226,97,74,0.4);
+  border: 2px dashed rgba(226,97,74,0.55);
+  color: var(--team-b);
 }
 
 .player-slot.team-a.occupied {
   background: var(--team-a-bg);
-  border: 1.5px solid var(--team-a);
+  border: 2px solid var(--team-a);
+  width: auto; height: auto; min-width: 58px; min-height: 58px;
+  max-width: 100%; border-radius: 999px; padding: 8px 12px;
+  font-size: 0.82rem;
 }
 .player-slot.team-b.occupied {
   background: var(--team-b-bg);
-  border: 1.5px solid var(--team-b);
+  border: 2px solid var(--team-b);
+  width: auto; height: auto; min-width: 58px; min-height: 58px;
+  max-width: 100%; border-radius: 999px; padding: 8px 12px;
+  font-size: 0.82rem;
 }
 
 .player-slot.mine.team-a {
