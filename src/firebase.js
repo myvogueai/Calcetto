@@ -1,13 +1,15 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 
+// Incolla qui il blocco firebaseConfig dalla Console Firebase
+// (progetto calcetto-5vs5 → Impostazioni → Le tue app → app web)
 const firebaseConfig = {
-  apiKey: "AIzaSyD-6yxzd4BX4vQIJ5ZLq77mbGl8Aau68_c",
-  authDomain: "myvogueai.firebaseapp.com",
-  projectId: "myvogueai",
-  storageBucket: "myvogueai.firebasestorage.app",
-  messagingSenderId: "356483710303",
-  appId: "1:356483710303:web:e59a2287f2f5af409b4aea",
+  apiKey: "INSERISCI_API_KEY",
+  authDomain: "calcetto-5vs5.firebaseapp.com",
+  projectId: "calcetto-5vs5",
+  storageBucket: "calcetto-5vs5.firebasestorage.app",
+  messagingSenderId: "INSERISCI_MESSAGING_SENDER_ID",
+  appId: "INSERISCI_APP_ID",
 };
 
 const app = initializeApp(firebaseConfig);

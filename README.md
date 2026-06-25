@@ -84,12 +84,12 @@ Ogni push su `main` esegue automaticamente build e deploy su Firebase Hosting.
 
 1. Apri **Chrome/Safari** sul telefono e vai su:
    **https://console.firebase.google.com**
-2. Seleziona il progetto **myvogueai**
+2. Seleziona il progetto **calcetto-5vs5**
 3. Tocca l'**icona ingranaggio** ⚙️ in alto a sinistra → **Impostazioni progetto**
 4. Vai alla scheda **Account di servizio**
 5. In basso, nella sezione **SDK Admin di Firebase**, tocca **Genera nuova chiave privata**
 6. Conferma con **Genera chiave**
-7. Si scarica un file `.json` (es. `myvogueai-firebase-adminsdk-xxxxx.json`)
+7. Si scarica un file `.json` (es. `calcetto-5vs5-firebase-adminsdk-xxxxx.json`)
 
 > **Sul telefono:** apri il file scaricato con l'app File o toccalo dalla notifica di download. Seleziona tutto il contenuto e **copialo negli appunti** — ti serve l'intero JSON, dalle parentesi graffe `{` fino a `}`.
 
@@ -98,10 +98,10 @@ Il JSON ha questa forma (i valori saranno i tuoi):
 ```json
 {
   "type": "service_account",
-  "project_id": "myvogueai",
+  "project_id": "calcetto-5vs5",
   "private_key_id": "...",
   "private_key": "-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n",
-  "client_email": "firebase-adminsdk-xxxxx@myvogueai.iam.gserviceaccount.com",
+  "client_email": "firebase-adminsdk-xxxxx@calcetto-5vs5.iam.gserviceaccount.com",
   ...
 }
 ```
@@ -133,13 +133,13 @@ Da quel momento, ogni push su `main`:
 Puoi anche lanciare il deploy manualmente dal telefono:
 **GitHub** → tab **Actions** → **Deploy to Firebase Hosting** → **Run workflow**
 
-L'app sarà disponibile su: **https://myvogueai.web.app**
+L'app sarà disponibile su: **https://calcetto-5vs5.web.app**
 
 #### Risoluzione problemi
 
 | Errore | Soluzione |
 |--------|-----------|
-| `Permission denied` sul deploy | Vai su [Google Cloud IAM](https://console.cloud.google.com/iam-admin/iam?project=myvogueai) dal browser, trova l'account `firebase-adminsdk-...` e aggiungi i ruoli **Firebase Hosting Admin** e **Firebase Rules Admin** |
+| `Permission denied` sul deploy | Vai su [Google Cloud IAM](https://console.cloud.google.com/iam-admin/iam?project=calcetto-5vs5) dal browser, trova l'account `firebase-adminsdk-...` e aggiungi i ruoli **Firebase Hosting Admin** e **Firebase Rules Admin** |
 | Secret non trovato | Verifica che il nome sia esattamente `FIREBASE_SERVICE_ACCOUNT` |
 | JSON non valido | Incolla l'intero file JSON, senza spazi o testo aggiuntivo prima/dopo |
 

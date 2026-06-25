@@ -38,7 +38,7 @@ jobs:
         run: |
           npx firebase deploy \
             --only hosting \
-            --project myvogueai \
+            --project calcetto-5vs5 \
             --non-interactive
 
       - name: Deploy Firestore rules (optional)
@@ -46,5 +46,5 @@ jobs:
         run: |
           npx firebase deploy \
             --only firestore:rules \
-            --project myvogueai \
+            --project calcetto-5vs5 \
             --non-interactive
